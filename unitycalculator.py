@@ -56,6 +56,8 @@ class Calc(object):
             return a[0] - b[0], common_d
         if sign == '/':
             return a[0] * b[1], a[1] * b[0]
+        if sign == '*':
+            return a[0] * b[0], a[1] * b[1]
 
     def find_common_denominator(self, a, b):
         if a[1]%b[1] == 0:
@@ -135,6 +137,12 @@ class TestEvaluateFactors(unittest.TestCase):
         factored = calc.parse_input('1/2')
         out = calc.evaluate_factors(factored)
         self.assertEqual(out, (1,2))
+
+    def test_evaluate_2_times_2(self):
+        calc = Calc()
+        factored = calc.parse_input('2*2')
+        out = calc.evaluate_factors(factored)
+        self.assertEqual(out, (4,1))
 
 
 if __name__ == '__main__':
