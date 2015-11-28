@@ -43,31 +43,56 @@ class Calc(object):
                 focus[1],
                 self.evaluate_factor(focus[2])]
 
+    def find_common_denominator(self, a, b):
+        if a[1]%b[1] == 0:
+            return a[1]
+        elif b[1]%a[1] == 0:
+            return b[1]
+        else:
+            return a[1]*b[1]
+
     def evaluate_factor(self, focus):
         if isinstance(focus, str):
             if [ord('0') <= ord(char) <= ord('9') for char in focus]:
-                return int(focus)
+                return (int(focus), 1)
         if isinstance(focus, list):
-            if not isinstance(focus[0], int):
+            if not isinstance(focus[0], tuple):
                 focus[0] = self.evaluate_factor(focus[0])
-            if not isinstance(focus[2], int):
+            if not isinstance(focus[2], tuple):
                 focus[2] = self.evaluate_factor(focus[2])
         if focus[1] == '+':
             #print (sum([isinstance(_, tuple) for _ in focus[::2]]))
-            if sum([isinstance(_, int) for _ in focus[::2]]) == 2:
-                return sum([int(_) for _ in focus[::2]])
+            #if sum([isinstance(_, int) for _ in focus[::2]]) == 2:
+            #    return sum([int(_) for _ in focus[::2]])
+            if not False in [isinstance(_, tuple) for _ in focus[::2]]:
+                common_d = self.find_common_denominator(focus[0], focus[2])
+                focus[0] = (focus[0][0] * (common_d / focus[0][1]), common_d)
+                focus[2] = (focus[2][0] * (common_d / focus[2][1]), common_d)
+                #sum([int(_) for _ in focus[::2]])
+                return focus[0][0] + focus[2][0], common_d
         if focus[1] == '-':
             #print (sum([isinstance(_, tuple) for _ in focus[::2]]))
-            if sum([isinstance(_, int) for _ in focus[::2]]) == 2:
-                return int(focus[0]) - int(focus[2])
+            #if sum([isinstance(_, int) for _ in focus[::2]]) == 2:
+            #    return int(focus[0]) - int(focus[2])
+            if not False in [isinstance(_, tuple) for _ in focus[::2]]:
+                common_d = self.find_common_denominator(focus[0], focus[2])
+                focus[0] = (focus[0][0] * (common_d / focus[0][1]), common_d)
+                focus[2] = (focus[2][0] * (common_d / focus[2][1]), common_d)
+                return focus[0][0] - focus[2][0], common_d
         if focus[1] == '/':
             #print (sum([isinstance(_, tuple) for _ in focus[::2]]))
-            if not False in ([isinstance(_, int) for _ in focus[::2]]):
-                focus[::2] = int(focus[0]), int(focus[2])
-                if focus[0] % focus[2] == 0:
-                    return focus[0]/focus[2]
-                else:
-                    return (focus[0], focus[2])
+            #if not False in ([isinstance(_, int) for _ in focus[::2]]):
+            #    focus[::2] = int(focus[0]), int(focus[2])
+            #    if focus[0] % focus[2] == 0:
+            #        return focus[0]/focus[2]
+            #    else:
+            #        return (focus[0], focus[2])
+            if not False in [isinstance(_, tuple) for _ in focus[::2]]:
+                return focus[0][0] * focus[2][1], focus[0][1] * focus[2][0]
+                common_d = self.find_common_denominator(focus[0], focus[2])
+                focus[0] = (focus[0][0] * (common_d / focus[0][1]), common_d)
+                focus[2] = (focus[2][0] * (common_d / focus[2][1]), common_d)
+                return focus[0][0], focus[2][0] * common_d
         return focus
 
 class TestParseInput(unittest.TestCase):
@@ -103,31 +128,31 @@ class TestEvaluateFactors(unittest.TestCase):
         calc = Calc()
         calc.factored = calc.parse_input('1+2')
         out = calc.evaluate_factors()
-        self.assertEqual(out, 3)
+        self.assertEqual(out, (3,1))
 
     def test_evaluate_1_plus_2_plus_3(self):
         calc = Calc()
         calc.factored = calc.parse_input('1+2+3')
         out = calc.evaluate_factors()
-        self.assertEqual(out, 6)
+        self.assertEqual(out, (6,1))
 
     def test_evaluate_2_minus_1(self):
         calc = Calc()
         calc.factored = calc.parse_input('2-1')
         out = calc.evaluate_factors()
-        self.assertEqual(out, 1)
+        self.assertEqual(out, (1,1))
 
     def test_evaluate_1_minus_2(self):
         calc = Calc()
         calc.factored = calc.parse_input('1-2')
         out = calc.evaluate_factors()
-        self.assertEqual(out, -1)
+        self.assertEqual(out, (-1,1))
 
     def test_evaluate_2_divided_by_2(self):
         calc = Calc()
         calc.factored = calc.parse_input('2/2')
         out = calc.evaluate_factors()
-        self.assertEqual(out, 1)
+        self.assertEqual(out, (2,2))
 
     def test_evaluate_1_divided_by_2(self):
         calc = Calc()
