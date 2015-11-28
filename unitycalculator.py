@@ -17,17 +17,14 @@ class Calc(object):
 
     def main(self):
         while True:
-            inp = '4*7+2/4+1' #test
-            #inp = raw_input(' >')
+            inp = raw_input(' >')
             print (self.parse_input(inp))
-            break
 
 
     def parse_input(self, inp, factors = []):
         for f in '+-*/':
             if f in inp:
                 factored = self.signs[f].split(inp, 1)
-                print(factored)
                 factored.insert(1, f)
                 factored[0] = self.parse_input(factored[0])
                 factored[2] = self.parse_input(factored[2])
@@ -35,6 +32,32 @@ class Calc(object):
         else:
             return inp
 
+class TestParseInput(unittest.TestCase):
+
+    def test_parse_plus(self):
+        calc = Calc()
+        out = calc.parse_input('1+2')
+        self.assertEqual(out, ['1', '+', '2'])
+
+    def test_parse_minus(self):
+        calc = Calc()
+        out = calc.parse_input('3-2')
+        self.assertEqual(out, ['3', '-', '2'])
+
+    def test_parse_multiply(self):
+        calc = Calc()
+        out = calc.parse_input('1*2')
+        self.assertEqual(out, ['1', '*', '2'])
+
+    def test_parse_divide(self):
+        calc = Calc()
+        out = calc.parse_input('4/2')
+        self.assertEqual(out, ['4', '/', '2'])
+
+    def test_parse_plus_minus_multiply_divide(self):
+        calc = Calc()
+        out = calc.parse_input('4*7+2/4-1')
+        self.assertEqual(out, [['4', '*', '7'], '+', [['2', '/', '4'], '-', '1']])
+
 if __name__ == '__main__':
-    calc = Calc()
-    calc.main()
+    unittest.main()
