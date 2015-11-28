@@ -72,8 +72,9 @@ class Calc(object):
             return a[1]*b[1]
 
     def reduce(self, fraction):
-        if fraction[0]%fraction[1]==0:
-            return fraction[0]/fraction[1], 1
+        for guess in range(fraction[1],1,-1):
+            if fraction[0]%guess==0 and fraction[1]%guess==0:
+                return fraction[0]/guess, fraction[1]/guess
         return fraction
 
 class TestParseInput(unittest.TestCase):
