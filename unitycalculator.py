@@ -42,6 +42,7 @@ class Calc(object):
             if [ord('0') <= ord(char) <= ord('9') for char in focus]:
                 return (int(focus), 1)
         if isinstance(focus, list):
+            sign = focus[1]
             if not isinstance(focus[0], tuple):
                 a = self.evaluate_factor(focus[0])
             if not isinstance(focus[2], tuple):
@@ -49,13 +50,13 @@ class Calc(object):
         common_d = self.find_common_denominator(a, b)
         a = (a[0] * (common_d / a[1]), common_d)
         b = (b[0] * (common_d / b[1]), common_d)
-        if focus[1] == '+':
+        if sign == '+':
             if not False in [isinstance(_, tuple) for _ in [a,b]]:
                 return a[0] + b[0], common_d
-        if focus[1] == '-':
+        if sign == '-':
             if not False in [isinstance(_, tuple) for _ in [a,b]]:
                 return a[0] - b[0], common_d
-        if focus[1] == '/':
+        if sign == '/':
             if not False in [isinstance(_, tuple) for _ in [a,b]]:
                 return a[0] * b[1], a[1] * b[0]
         return focus
