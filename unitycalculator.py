@@ -38,15 +38,7 @@ class Calc(object):
 
     def evaluate_factors(self, focus = None):
         if focus is None: focus = self.factored
-        return self.evaluate_factor(focus)
-
-    def find_common_denominator(self, a, b):
-        if a[1]%b[1] == 0:
-            return a[1]
-        elif b[1]%a[1] == 0:
-            return b[1]
-        else:
-            return a[1]*b[1]
+        return self.reduce(self.evaluate_factor(focus))
 
     def evaluate_factor(self, focus):
         if isinstance(focus, str):
@@ -70,6 +62,19 @@ class Calc(object):
             if not False in [isinstance(_, tuple) for _ in focus[::2]]:
                 return focus[0][0] * focus[2][1], focus[0][1] * focus[2][0]
         return focus
+
+    def find_common_denominator(self, a, b):
+        if a[1]%b[1] == 0:
+            return a[1]
+        elif b[1]%a[1] == 0:
+            return b[1]
+        else:
+            return a[1]*b[1]
+
+    def reduce(self, fraction):
+        if fraction[0]%fraction[1]==0:
+            return fraction[0]/fraction[1], 1
+        return fraction
 
 class TestParseInput(unittest.TestCase):
 
@@ -128,7 +133,7 @@ class TestEvaluateFactors(unittest.TestCase):
         calc = Calc()
         calc.factored = calc.parse_input('2/2')
         out = calc.evaluate_factors()
-        self.assertEqual(out, (2,2))
+        self.assertEqual(out, (1,1))
 
     def test_evaluate_1_divided_by_2(self):
         calc = Calc()
