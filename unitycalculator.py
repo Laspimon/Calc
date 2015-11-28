@@ -228,6 +228,14 @@ class TestEvaluateFactors(unittest.TestCase):
         self.assertRaises(ValueError,
                           partial(calc.parse_input, '/1'))
 
+class TestGetPresentableOutput(unittest.TestCase):
+    def test_presentable_1_over_4(self):
+        calc = Calc()
+        factored = calc.parse_input('1/4')
+        evaled = calc.evaluate_factors(factored)
+        out = calc.get_presentable_output(evaled)
+        self.assertEqual(out, '1 / 4')
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--run', help='Run the calculator (no testing).',
