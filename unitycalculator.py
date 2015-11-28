@@ -39,9 +39,6 @@ class Calc(object):
     def evaluate_factors(self, focus = None):
         if focus is None: focus = self.factored
         return self.evaluate_factor(focus)
-        return [self.evaluate_factor(focus[0]),
-                focus[1],
-                self.evaluate_factor(focus[2])]
 
     def find_common_denominator(self, a, b):
         if a[1]%b[1] == 0:
@@ -60,39 +57,18 @@ class Calc(object):
                 focus[0] = self.evaluate_factor(focus[0])
             if not isinstance(focus[2], tuple):
                 focus[2] = self.evaluate_factor(focus[2])
+        common_d = self.find_common_denominator(focus[0], focus[2])
+        focus[0] = (focus[0][0] * (common_d / focus[0][1]), common_d)
+        focus[2] = (focus[2][0] * (common_d / focus[2][1]), common_d)
         if focus[1] == '+':
-            #print (sum([isinstance(_, tuple) for _ in focus[::2]]))
-            #if sum([isinstance(_, int) for _ in focus[::2]]) == 2:
-            #    return sum([int(_) for _ in focus[::2]])
             if not False in [isinstance(_, tuple) for _ in focus[::2]]:
-                common_d = self.find_common_denominator(focus[0], focus[2])
-                focus[0] = (focus[0][0] * (common_d / focus[0][1]), common_d)
-                focus[2] = (focus[2][0] * (common_d / focus[2][1]), common_d)
-                #sum([int(_) for _ in focus[::2]])
                 return focus[0][0] + focus[2][0], common_d
         if focus[1] == '-':
-            #print (sum([isinstance(_, tuple) for _ in focus[::2]]))
-            #if sum([isinstance(_, int) for _ in focus[::2]]) == 2:
-            #    return int(focus[0]) - int(focus[2])
             if not False in [isinstance(_, tuple) for _ in focus[::2]]:
-                common_d = self.find_common_denominator(focus[0], focus[2])
-                focus[0] = (focus[0][0] * (common_d / focus[0][1]), common_d)
-                focus[2] = (focus[2][0] * (common_d / focus[2][1]), common_d)
                 return focus[0][0] - focus[2][0], common_d
         if focus[1] == '/':
-            #print (sum([isinstance(_, tuple) for _ in focus[::2]]))
-            #if not False in ([isinstance(_, int) for _ in focus[::2]]):
-            #    focus[::2] = int(focus[0]), int(focus[2])
-            #    if focus[0] % focus[2] == 0:
-            #        return focus[0]/focus[2]
-            #    else:
-            #        return (focus[0], focus[2])
             if not False in [isinstance(_, tuple) for _ in focus[::2]]:
                 return focus[0][0] * focus[2][1], focus[0][1] * focus[2][0]
-                common_d = self.find_common_denominator(focus[0], focus[2])
-                focus[0] = (focus[0][0] * (common_d / focus[0][1]), common_d)
-                focus[2] = (focus[2][0] * (common_d / focus[2][1]), common_d)
-                return focus[0][0], focus[2][0] * common_d
         return focus
 
 class TestParseInput(unittest.TestCase):
