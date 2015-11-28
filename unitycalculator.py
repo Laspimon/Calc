@@ -55,6 +55,9 @@ class Calc(object):
         if focus[1] == '+':
             if sum([isinstance(_, int) for _ in focus[::2]]) == 2:
                 return sum([int(_) for _ in focus[::2]])
+        if focus[1] == '-':
+            if sum([isinstance(_, int) for _ in focus[::2]]) == 2:
+                return int(focus[0]) - int(focus[2])
         return focus
 
 class TestParseInput(unittest.TestCase):
@@ -97,6 +100,13 @@ class TestEvaluateFactors(unittest.TestCase):
         calc.factored = calc.parse_input('1+2+3')
         out = calc.evaluate_factors()
         self.assertEqual(out, 6)
+
+    def test_evaluate_2_minus_1(self):
+        calc = Calc()
+        calc.factored = calc.parse_input('2-1')
+        out = calc.evaluate_factors()
+        self.assertEqual(out, 1)
+
 
 if __name__ == '__main__':
     unittest.main()
