@@ -46,21 +46,21 @@ class Calc(object):
                 return (int(focus), 1)
         if isinstance(focus, list):
             if not isinstance(focus[0], tuple):
-                focus[0] = self.evaluate_factor(focus[0])
+                a = self.evaluate_factor(focus[0])
             if not isinstance(focus[2], tuple):
-                focus[2] = self.evaluate_factor(focus[2])
-        common_d = self.find_common_denominator(focus[0], focus[2])
-        focus[0] = (focus[0][0] * (common_d / focus[0][1]), common_d)
-        focus[2] = (focus[2][0] * (common_d / focus[2][1]), common_d)
+                b = self.evaluate_factor(focus[2])
+        common_d = self.find_common_denominator(a, b)
+        a = (a[0] * (common_d / a[1]), common_d)
+        b = (b[0] * (common_d / b[1]), common_d)
         if focus[1] == '+':
-            if not False in [isinstance(_, tuple) for _ in focus[::2]]:
-                return focus[0][0] + focus[2][0], common_d
+            if not False in [isinstance(_, tuple) for _ in [a,b]]:
+                return a[0] + b[0], common_d
         if focus[1] == '-':
-            if not False in [isinstance(_, tuple) for _ in focus[::2]]:
-                return focus[0][0] - focus[2][0], common_d
+            if not False in [isinstance(_, tuple) for _ in [a,b]]:
+                return a[0] - b[0], common_d
         if focus[1] == '/':
-            if not False in [isinstance(_, tuple) for _ in focus[::2]]:
-                return focus[0][0] * focus[2][1], focus[0][1] * focus[2][0]
+            if not False in [isinstance(_, tuple) for _ in [a,b]]:
+                return a[0] * b[1], a[1] * b[0]
         return focus
 
     def find_common_denominator(self, a, b):
