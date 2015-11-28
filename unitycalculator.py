@@ -6,10 +6,11 @@ import unittest, re
 class Calc(object):
 
     def __init__(self):
-        self.add = re.compile('\+?')
-        self.substract = re.compile('-?')
-        self.multiply = re.compile('\*?')
-        self.divide = re.compile('/?')
+        self.add = re.compile('\+')
+        # Supports division and multiplication with negative numbers: "/-", "*-"
+        self.substract = re.compile('(?<!^)(?<!\*)(?<!/)-')
+        self.multiply = re.compile('\*')
+        self.divide = re.compile('/')
         self.signs = {'+': self.add,
                       '-': self.substract,
                       '*': self.multiply,
@@ -25,7 +26,7 @@ class Calc(object):
 
     def parse_input(self, inp, factors = []):
         for f in '+-*/':
-            if f in inp:
+            if self.signs[f].search(inp, 1):
                 factored = self.signs[f].split(inp, 1)
                 factored.insert(1, f)
                 factored[0] = self.parse_input(factored[0])
@@ -39,7 +40,7 @@ class Calc(object):
 
     def evaluate_factor(self, focus):
         if isinstance(focus, str):
-            if [ord('0') <= ord(char) <= ord('9') for char in focus]:
+            if self.is_number(focus):
                 return (int(focus), 1)
         if isinstance(focus, list):
             sign = focus[1]
@@ -68,10 +69,19 @@ class Calc(object):
             return a[1]*b[1]
 
     def reduce(self, fraction):
-        for guess in range(fraction[1],1,-1):
-            if fraction[0]%guess==0 and fraction[1]%guess==0:
-                return fraction[0]/guess, fraction[1]/guess
-        return fraction
+        a, b = fraction
+        # Wanting to reduce the fraction, we loop from the denominator and down.
+        for guess in range(b, 1, -1):
+            if a%guess==0 and b%guess==0:
+                a, b = a/guess, b/guess
+        # If the denominator is negative. We fix it.
+        if b < 0:
+            return -a, -b
+        return a, b
+
+    def is_number(self, string):
+        if string[0] == '-' and len(string)>1: string = string[1:]
+        return not False in [ord('0') <= ord(char) <= ord('9') for char in string]
 
 class TestParseInput(unittest.TestCase):
 
@@ -94,6 +104,11 @@ class TestParseInput(unittest.TestCase):
         calc = Calc()
         out = calc.parse_input('4/2')
         self.assertEqual(out, ['4', '/', '2'])
+
+    def test_parse_divide_by_negative(self):
+        calc = Calc()
+        out = calc.parse_input('4/-2')
+        self.assertEqual(out, ['4', '/', '-2'])
 
     def test_parse_plus_minus_multiply_divide(self):
         calc = Calc()
@@ -144,6 +159,14 @@ class TestEvaluateFactors(unittest.TestCase):
         out = calc.evaluate_factors(factored)
         self.assertEqual(out, (4,1))
 
+    def test_evaluate_1_times_minus_2(self):
+        calc = Calc()
+        factored = calc.parse_input('1/-2')
+        out = calc.evaluate_factors(factored)
+        self.assertEqual(out, (-1,2))
+
+
 
 if __name__ == '__main__':
     unittest.main()
+
