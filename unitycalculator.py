@@ -107,6 +107,12 @@ class TestEvaluateFactors(unittest.TestCase):
         out = calc.evaluate_factors()
         self.assertEqual(out, 1)
 
+    def test_evaluate_1_minus_2(self):
+        calc = Calc()
+        calc.factored = calc.parse_input('1-2')
+        out = calc.evaluate_factors()
+        self.assertEqual(out, -1)
+
 
 if __name__ == '__main__':
     unittest.main()
