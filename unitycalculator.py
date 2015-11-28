@@ -5,8 +5,6 @@ import unittest, re
 
 class Calc(object):
 
-    factored = None
-
     def __init__(self):
         self.add = re.compile('\+?')
         self.substract = re.compile('-?')
@@ -20,8 +18,8 @@ class Calc(object):
     def main(self):
         while True:
             inp = raw_input(' >')
-            self.factored = self.parse_input(inp)
-            print (self.factored)
+            factored = self.parse_input(inp)
+            print (factored)
             break
 
 
@@ -36,8 +34,7 @@ class Calc(object):
         else:
             return inp
 
-    def evaluate_factors(self, focus = None):
-        if focus is None: focus = self.factored
+    def evaluate_factors(self, focus):
         return self.reduce(self.evaluate_factor(focus))
 
     def evaluate_factor(self, focus):
@@ -108,38 +105,38 @@ class TestEvaluateFactors(unittest.TestCase):
 
     def test_evaluate_1_plus_2(self):
         calc = Calc()
-        calc.factored = calc.parse_input('1+2')
-        out = calc.evaluate_factors()
+        factored = calc.parse_input('1+2')
+        out = calc.evaluate_factors(factored)
         self.assertEqual(out, (3,1))
 
     def test_evaluate_1_plus_2_plus_3(self):
         calc = Calc()
-        calc.factored = calc.parse_input('1+2+3')
-        out = calc.evaluate_factors()
+        factored = calc.parse_input('1+2+3')
+        out = calc.evaluate_factors(factored)
         self.assertEqual(out, (6,1))
 
     def test_evaluate_2_minus_1(self):
         calc = Calc()
-        calc.factored = calc.parse_input('2-1')
-        out = calc.evaluate_factors()
+        factored = calc.parse_input('2-1')
+        out = calc.evaluate_factors(factored)
         self.assertEqual(out, (1,1))
 
     def test_evaluate_1_minus_2(self):
         calc = Calc()
-        calc.factored = calc.parse_input('1-2')
-        out = calc.evaluate_factors()
+        factored = calc.parse_input('1-2')
+        out = calc.evaluate_factors(factored)
         self.assertEqual(out, (-1,1))
 
     def test_evaluate_2_divided_by_2(self):
         calc = Calc()
-        calc.factored = calc.parse_input('2/2')
-        out = calc.evaluate_factors()
+        factored = calc.parse_input('2/2')
+        out = calc.evaluate_factors(factored)
         self.assertEqual(out, (1,1))
 
     def test_evaluate_1_divided_by_2(self):
         calc = Calc()
-        calc.factored = calc.parse_input('1/2')
-        out = calc.evaluate_factors()
+        factored = calc.parse_input('1/2')
+        out = calc.evaluate_factors(factored)
         self.assertEqual(out, (1,2))
 
 
