@@ -51,15 +51,11 @@ class Calc(object):
         a = (a[0] * (common_d / a[1]), common_d)
         b = (b[0] * (common_d / b[1]), common_d)
         if sign == '+':
-            if not False in [isinstance(_, tuple) for _ in [a,b]]:
-                return a[0] + b[0], common_d
+            return a[0] + b[0], common_d
         if sign == '-':
-            if not False in [isinstance(_, tuple) for _ in [a,b]]:
-                return a[0] - b[0], common_d
+            return a[0] - b[0], common_d
         if sign == '/':
-            if not False in [isinstance(_, tuple) for _ in [a,b]]:
-                return a[0] * b[1], a[1] * b[0]
-        return focus
+            return a[0] * b[1], a[1] * b[0]
 
     def find_common_denominator(self, a, b):
         if a[1]%b[1] == 0:
