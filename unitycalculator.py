@@ -12,11 +12,11 @@ class Calc(object):
         """
         self.add = re.compile('\+')
         # Supports division and multiplication with negative numbers: "/-", "*-"
-        self.substract = re.compile('(?<!^)(?<!\*)(?<!/)-')
+        self.subtract = re.compile('(?<!^)(?<!\*)(?<!/)-')
         self.multiply = re.compile('\*')
         self.divide = re.compile('/')
         self.signs = {'+': self.add,
-                      '-': self.substract,
+                      '-': self.subtract,
                       '*': self.multiply,
                       '/': self.divide}
 
