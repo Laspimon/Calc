@@ -41,7 +41,7 @@ class Calc(object):
         """Quick method for formatting output.
         """
         a, b = evaluated
-        if b == 1:
+        if False and b == 1: # This would have been nice.
             return str(a)
         else:
             return '{} / {}'.format(a,b)
@@ -242,7 +242,9 @@ class TestGetPresentableOutput(unittest.TestCase):
         factored = calc.parse_input('20/2')
         evaled = calc.evaluate_factors(factored)
         out = calc.get_presentable_output(evaled)
-        self.assertEqual(out, '10')
+        self.assertEqual(out, '10 / 1')
+        # This could be reduced further, but would no longer be a fraction.
+        #self.assertEqual(out, '10')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
