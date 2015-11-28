@@ -66,6 +66,8 @@ class Calc(object):
                 focus[::2] = int(focus[0]), int(focus[2])
                 if focus[0] % focus[2] == 0:
                     return focus[0]/focus[2]
+                else:
+                    return (focus[0], focus[2])
         return focus
 
 class TestParseInput(unittest.TestCase):
@@ -126,6 +128,12 @@ class TestEvaluateFactors(unittest.TestCase):
         calc.factored = calc.parse_input('2/2')
         out = calc.evaluate_factors()
         self.assertEqual(out, 1)
+
+    def test_evaluate_1_divided_by_2(self):
+        calc = Calc()
+        calc.factored = calc.parse_input('1/2')
+        out = calc.evaluate_factors()
+        self.assertEqual(out, (1,2))
 
 
 if __name__ == '__main__':
