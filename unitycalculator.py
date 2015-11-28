@@ -18,10 +18,18 @@ class Calc(object):
 
     def main(self):
         while True:
-            inp = raw_input(' >')
+            inp = ''.join(raw_input(' > ').split(' '))
             factored = self.parse_input(inp)
-            print (factored)
+            print ('  ', self.get_presentable_output(
+                self.evaluate_factors(factored)))
             break
+
+    def get_presentable_output(self, evaluated):
+        a, b = evaluated
+        if b == 1:
+            return str(a)
+        else:
+            return '{} / {}'.format(a,b)
 
 
     def parse_input(self, inp, factors = []):
@@ -153,6 +161,12 @@ class TestEvaluateFactors(unittest.TestCase):
         out = calc.evaluate_factors(factored)
         self.assertEqual(out, (1,2))
 
+    def test_evaluate_minus_1_divided_by_minus_2(self):
+        calc = Calc()
+        factored = calc.parse_input('-1/-2')
+        out = calc.evaluate_factors(factored)
+        self.assertEqual(out, (1,2))
+
     def test_evaluate_2_times_2(self):
         calc = Calc()
         factored = calc.parse_input('2*2')
@@ -168,5 +182,6 @@ class TestEvaluateFactors(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    Calc().main()
+    #unittest.main()
 
