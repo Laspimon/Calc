@@ -43,7 +43,7 @@ class Calc(object):
                 focus[1],
                 self.evaluate_factor(focus[2])]
 
-    def evaluate_factor(self, focus = None):
+    def evaluate_factor(self, focus):
         if isinstance(focus, str):
             if [ord('0') <= ord(char) <= ord('9') for char in focus]:
                 return int(focus)
@@ -53,11 +53,19 @@ class Calc(object):
             if not isinstance(focus[2], int):
                 focus[2] = self.evaluate_factor(focus[2])
         if focus[1] == '+':
+            #print (sum([isinstance(_, tuple) for _ in focus[::2]]))
             if sum([isinstance(_, int) for _ in focus[::2]]) == 2:
                 return sum([int(_) for _ in focus[::2]])
         if focus[1] == '-':
+            #print (sum([isinstance(_, tuple) for _ in focus[::2]]))
             if sum([isinstance(_, int) for _ in focus[::2]]) == 2:
                 return int(focus[0]) - int(focus[2])
+        if focus[1] == '/':
+            #print (sum([isinstance(_, tuple) for _ in focus[::2]]))
+            if not False in ([isinstance(_, int) for _ in focus[::2]]):
+                focus[::2] = int(focus[0]), int(focus[2])
+                if focus[0] % focus[2] == 0:
+                    return focus[0]/focus[2]
         return focus
 
 class TestParseInput(unittest.TestCase):
@@ -112,6 +120,12 @@ class TestEvaluateFactors(unittest.TestCase):
         calc.factored = calc.parse_input('1-2')
         out = calc.evaluate_factors()
         self.assertEqual(out, -1)
+
+    def test_evaluate_2_divided_by_2(self):
+        calc = Calc()
+        calc.factored = calc.parse_input('2/2')
+        out = calc.evaluate_factors()
+        self.assertEqual(out, 1)
 
 
 if __name__ == '__main__':
