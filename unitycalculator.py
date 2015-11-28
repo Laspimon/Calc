@@ -254,5 +254,3 @@ if __name__ == '__main__':
         Calc().main()
     else:
         unittest.main()
-
-
