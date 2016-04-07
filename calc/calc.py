@@ -3,7 +3,7 @@
 from __future__ import print_function
 from functools import partial
 
-import unittest, re, argparse
+import re, argparse
 
 class Calc(object):
     def __init__(self):
@@ -84,8 +84,8 @@ class Calc(object):
             if not isinstance(focus[2], tuple):
                 b = self.evaluate_factor(focus[2])
         common_d = self.find_common_denominator(a, b)
-        a = (a[0] * (common_d / a[1]), common_d)
-        b = (b[0] * (common_d / b[1]), common_d)
+        a = (a[0] * (common_d // a[1]), common_d)
+        b = (b[0] * (common_d // b[1]), common_d)
         if sign == '+':
             return a[0] + b[0], common_d
         if sign == '-':
@@ -112,7 +112,7 @@ class Calc(object):
         # Wanting to reduce the fraction, we loop from the denominator and down.
         for guess in range(b, 1, -1):
             if a%guess==0 and b%guess==0:
-                a, b = a/guess, b/guess
+                a, b = a//guess, b//guess
         # If the denominator is negative. We fix it.
         if b < 0:
             return -a, -b
@@ -124,124 +124,6 @@ class Calc(object):
         if string[0] == '-' and len(string)>1: string = string[1:]
         return not False in [ord('0')<=ord(char)<= ord('9') for char in string]
 
-class TestParseInput(unittest.TestCase):
-    def test_parse_plus(self):
-        calc = Calc()
-        out = calc.parse_input('1+2')
-        self.assertEqual(out, ['1', '+', '2'])
-
-    def test_parse_minus(self):
-        calc = Calc()
-        out = calc.parse_input('3-2')
-        self.assertEqual(out, ['3', '-', '2'])
-
-    def test_parse_multiply(self):
-        calc = Calc()
-        out = calc.parse_input('1*2')
-        self.assertEqual(out, ['1', '*', '2'])
-
-    def test_parse_divide(self):
-        calc = Calc()
-        out = calc.parse_input('4/2')
-        self.assertEqual(out, ['4', '/', '2'])
-
-    def test_parse_divide_by_negative(self):
-        calc = Calc()
-        out = calc.parse_input('4/-2')
-        self.assertEqual(out, ['4', '/', '-2'])
-
-    def test_parse_plus_minus_multiply_divide(self):
-        calc = Calc()
-        out = calc.parse_input('4*7+2/4-1')
-        self.assertEqual(out, [['4', '*', '7'],'+',[['2', '/', '4'],'-','1']])
-
-class TestEvaluateFactors(unittest.TestCase):
-    def test_evaluate_1_plus_2(self):
-        calc = Calc()
-        factored = calc.parse_input('1+2')
-        out = calc.evaluate_factors(factored)
-        self.assertEqual(out, (3,1))
-
-    def test_evaluate_1_plus_2_plus_3(self):
-        calc = Calc()
-        factored = calc.parse_input('1+2+3')
-        out = calc.evaluate_factors(factored)
-        self.assertEqual(out, (6,1))
-
-    def test_evaluate_2_minus_1(self):
-        calc = Calc()
-        factored = calc.parse_input('2-1')
-        out = calc.evaluate_factors(factored)
-        self.assertEqual(out, (1,1))
-
-    def test_evaluate_1_minus_2(self):
-        calc = Calc()
-        factored = calc.parse_input('1-2')
-        out = calc.evaluate_factors(factored)
-        self.assertEqual(out, (-1,1))
-
-    def test_evaluate_2_divided_by_2(self):
-        calc = Calc()
-        factored = calc.parse_input('2/2')
-        out = calc.evaluate_factors(factored)
-        self.assertEqual(out, (1,1))
-
-    def test_evaluate_1_divided_by_2(self):
-        calc = Calc()
-        factored = calc.parse_input('1/2')
-        out = calc.evaluate_factors(factored)
-        self.assertEqual(out, (1,2))
-
-    def test_evaluate_minus_1_divided_by_minus_2(self):
-        calc = Calc()
-        factored = calc.parse_input('-1/-2')
-        out = calc.evaluate_factors(factored)
-        self.assertEqual(out, (1,2))
-
-    def test_evaluate_2_times_2(self):
-        calc = Calc()
-        factored = calc.parse_input('2*2')
-        out = calc.evaluate_factors(factored)
-        self.assertEqual(out, (4,1))
-
-    def test_evaluate_1_times_minus_2(self):
-        calc = Calc()
-        factored = calc.parse_input('1/-2')
-        out = calc.evaluate_factors(factored)
-        self.assertEqual(out, (-1,2))
-
-    def test_evaluate_no_input(self):
-        calc = Calc()
-        self.assertRaises(ValueError,
-                          partial(calc.parse_input, ''))
-
-    def test_evaluate_divide_by_zero(self):
-        calc = Calc()
-        self.assertRaises(ValueError,
-                          partial(calc.parse_input, '1/0'))
-
-    def test_evaluate_divide_nothing_by_1(self):
-        calc = Calc()
-        self.assertRaises(ValueError,
-                          partial(calc.parse_input, '/1'))
-
-class TestGetPresentableOutput(unittest.TestCase):
-    def test_presentable_1_over_4(self):
-        calc = Calc()
-        factored = calc.parse_input('1/4')
-        evaled = calc.evaluate_factors(factored)
-        out = calc.get_presentable_output(evaled)
-        self.assertEqual(out, '1 / 4')
-
-    def test_presentable_20_over_2(self):
-        calc = Calc()
-        factored = calc.parse_input('20/2')
-        evaled = calc.evaluate_factors(factored)
-        out = calc.get_presentable_output(evaled)
-        self.assertEqual(out, '10 / 1')
-        # This could be reduced further, but would no longer be a fraction.
-        #self.assertEqual(out, '10')
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--run', help='Run the calculator (no testing).',
@@ -251,4 +133,5 @@ if __name__ == '__main__':
     if args.run:
         Calc().main()
     else:
-        unittest.main()
+        print ("To run tests, please use nose (pip install nose; nosetests).\n"
+               "To try out the calculator, run this file with the --run flag.")
