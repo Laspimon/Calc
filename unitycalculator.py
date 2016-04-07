@@ -6,7 +6,6 @@ from functools import partial
 import unittest, re, argparse
 
 class Calc(object):
-
     def __init__(self):
         """Make regular expressions for parsing input.
         """
@@ -126,7 +125,6 @@ class Calc(object):
         return not False in [ord('0')<=ord(char)<= ord('9') for char in string]
 
 class TestParseInput(unittest.TestCase):
-
     def test_parse_plus(self):
         calc = Calc()
         out = calc.parse_input('1+2')
@@ -158,7 +156,6 @@ class TestParseInput(unittest.TestCase):
         self.assertEqual(out, [['4', '*', '7'],'+',[['2', '/', '4'],'-','1']])
 
 class TestEvaluateFactors(unittest.TestCase):
-
     def test_evaluate_1_plus_2(self):
         calc = Calc()
         factored = calc.parse_input('1+2')
@@ -229,7 +226,6 @@ class TestEvaluateFactors(unittest.TestCase):
                           partial(calc.parse_input, '/1'))
 
 class TestGetPresentableOutput(unittest.TestCase):
-
     def test_presentable_1_over_4(self):
         calc = Calc()
         factored = calc.parse_input('1/4')
